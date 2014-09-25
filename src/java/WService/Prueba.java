@@ -44,13 +44,13 @@ public class Prueba {
        this.FileName=fa.ImageName;
        String rutafirmada=firmar(message,Password,imagen,"AES");
        String zipFirmado=fa.zipFile(rutafirmada, NameFile);
-//       fa.DeleteFile(zipFirmado);
-//       fa.DeleteFile(rutafirmada);
-//       fa.DeleteFile(imagen);
-//       fa.DeleteFile(zipfile);
+       
        String resultado=fa.getb64(zipFirmado);
-
-       return imagen;
+       fa.DeleteFile(zipFirmado);
+       fa.DeleteFile(rutafirmada);
+       fa.DeleteFile(imagen);
+       fa.DeleteFile(zipfile);
+       return resultado;
        //return imagen;
     }
     
@@ -74,7 +74,7 @@ public class Prueba {
             if (getExt(archivoBMP.getName()).equalsIgnoreCase("png")) {
                 StegaWithPNG stega = new StegaWithPNG(img);
                 System.out.println("Is valid: "+img.isValid());
-                String ruta=System.getProperty("user.home") + "/Documents/NetbeansProjects/PruebaWebService/web/Imagenes/"+FileName+"Firmada.png";
+                String ruta=System.getProperty("user.home") + "/Documents/PruebaWebService/Imagenes/Images/"+FileName+"Firmada.png";
                 boolean execStega = stega.execStega(ruta, mensajeCifrado, "LSBs");
                 System.out.println("execStega: "+execStega);
                 if (execStega) {//img.savePNG(nFile, stega.getPNG().getChunks())

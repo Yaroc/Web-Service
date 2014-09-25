@@ -34,6 +34,7 @@ public class FileAux {
     if (!f.exists()){f.mkdirs();}
     if (!f2.exists()){f.mkdirs();}
     if (!f3.exists()){f.mkdirs();}
+    System.out.println("Dir Created");
     }
     
     String ImageName=null;
@@ -175,7 +176,8 @@ public class FileAux {
                 return zipath;
     	}catch(IOException ex){
     	   ex.printStackTrace();
-           return "Failed to Zip";
+           
+           return "Failed to Zip"+zipath;
     	}      
            
    }
