@@ -15,11 +15,7 @@ import FADD.XOR;
 import com.google.zxing.WriterException;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jws.WebService;
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
 
 /**
  *

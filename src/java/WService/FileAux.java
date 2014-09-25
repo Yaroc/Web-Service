@@ -6,28 +6,17 @@
 
 package WService;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Writer;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
-import sun.misc.PerformanceLogger;
 
 /**
  *
@@ -40,7 +29,11 @@ public class FileAux {
     
     public FileAux(){
     File f=new File(path);
+    File f2=new File(path+"/ZipFiles");
+    File f3=new File(path+"/Images");
     if (!f.exists()){f.mkdirs();}
+    if (!f2.exists()){f.mkdirs();}
+    if (!f3.exists()){f.mkdirs();}
     }
     
     String ImageName=null;
@@ -50,7 +43,6 @@ public class FileAux {
           DataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64);
        } catch (IOException ex) {
         }
-    
      return DataFile;
     }
     
@@ -163,7 +155,7 @@ public class FileAux {
    
    public String zipFile(String pathToCompress,String NameFile){
    
-       byte[] buffer = new byte[1024];
+       byte[] buffer = new byte[4096];
        String zipath=this.path+"\\ZipFiles\\"+NameFile+"zipFirmado.zip";
  
     	try{
