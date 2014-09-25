@@ -36,22 +36,27 @@ import sun.misc.PerformanceLogger;
 public class FileAux {
     
     
-    String path=System.getProperty("user.home") + "/Documents/NetbeansProjects/PruebaWebService/web/Imagenes";
+    String path=System.getProperty("user.home") + "/Documents/PruebaWebService/Imagenes";//Dejen esta ruta...
+    
+    public FileAux(){
+    File f=new File(path);
+    if (!f.exists()){f.mkdirs();}
+    }
+    
     String ImageName=null;
     public byte[] decodeBase64(String base64){
-    
-    byte[] btDataFile = null;
+    byte[] DataFile = null;
         try {
-          btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64);
+          DataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64);
        } catch (IOException ex) {
         }
     
-    return btDataFile;
+     return DataFile;
     }
     
     
     public String CreateFile(String Nombre,String base64,String ext){
-        
+        if (ext.equals("zip")){}
         String source=path+"/ZipFiles/"+Nombre+"."+ext;
         File file = new File(source);
         FileOutputStream fos = null;
@@ -69,7 +74,7 @@ public class FileAux {
             return res;
         } catch (IOException ex) {
             System.out.println(ex.toString());
-            return "failded";
+            return "failed";
         }
     }// fin del metodo
     
@@ -102,7 +107,7 @@ public class FileAux {
         zipIn.close();
         return fpath;
     }
-    private final int BUFFER_SIZE=4096;
+     private final int BUFFER_SIZE=4096;
      private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
         byte[] bytesIn = new byte[BUFFER_SIZE];
@@ -131,156 +136,58 @@ public class FileAux {
     
     
    public String jpgToPng(String JPGPath){
-   
-       
-        File output;
+
+            File output;
         try {
             File input = new File(JPGPath);
-            
-//Read the file to a BufferedImage
             BufferedImage image = ImageIO.read(input);
-            
-            
             String ar[]=JPGPath.split("\\.");
-            System.err.println(ar.length);
-            
+            System.err.println(ar.length);    
             String PNGPath=ar[0];
-            
-            
             output = new File(PNGPath+".png");
-            
-//Write the image to the destination as a PNG
-            ImageIO.write(image, "png", output);
-            
-           
+            ImageIO.write(image, "png", output);  
         } catch (IOException ex) {
            return ex.toString();
         }
-        System.err.println(output.getAbsolutePath());
-        System.err.println(output.getPath());
+   //     System.err.println(output.getAbsolutePath());
+      //  System.err.println(output.getPath());
         
          return output.getPath();
-   }
+        }
    
-   public static byte[] createChecksum(String filename) throws Exception {
-       InputStream fis =  new FileInputStream(filename);
-
-       byte[] buffer = new byte[1024];
-       MessageDigest complete = MessageDigest.getInstance("MD5");
-       int numRead;
-
-       do {
-           numRead = fis.read(buffer);
-           if (numRead > 0) {
-               complete.update(buffer, 0, numRead);
-           }
-       } while (numRead != -1);
-
-       fis.close();
-       return complete.digest();
-   }
+  public void DeleteFile(String ruta){
+    File f=new File(ruta);
+    if(!f.delete()){System.err.println("Failed to Delete "+ruta);}
+  }
    
    
    public String zipFile(String pathToCompress,String NameFile){
    
        byte[] buffer = new byte[1024];
-       String zipath=System.getProperty("user.home")+"\\Documents\\NetBeansProjects\\PruebaWebService\\web\\Imagenes\\ZipFiles\\"+NameFile+"zipFirmado.zip";
+       String zipath=this.path+"\\ZipFiles\\"+NameFile+"zipFirmado.zip";
  
     	try{
- 
     		FileOutputStream fos = new FileOutputStream(zipath);
     		ZipOutputStream zos = new ZipOutputStream(fos);
     		ZipEntry ze= new ZipEntry(pathToCompress);
     		zos.putNextEntry(ze);
     		FileInputStream in = new FileInputStream(pathToCompress);
- 
     		int len;
     		while ((len = in.read(buffer)) > 0) {
     			zos.write(buffer, 0, len);
     		}
- 
     		in.close();
     		zos.closeEntry();
- 
-    		//remember close it
     		zos.close();
- 
     		System.out.println("Done");
- return zipath;
+                return zipath;
     	}catch(IOException ex){
     	   ex.printStackTrace();
-    	}
-       
-       
-       
-       
-       
-   return zipath;
-   }
-   
-   
-   
-   
-   
-   
-   
-   
-   public static String getMD5Checksum(String filename) throws Exception {
-       byte[] b = createChecksum(filename);
-       String result = "";
-
-       for (int i=0; i < b.length; i++) {
-           result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
-       }
-       return result;
-   }
-   
-  public String CreateQR(String message) throws WriterException, FileNotFoundException, IOException{
-   BitMatrix bm;
-             File dir = new File(System.getProperty("user.home")+"\\Documents\\NetBeansProjects\\PruebaWebService\\web\\Imagenes\\QR");
-                  Writer writer = new QRCodeWriter();                                                 
-            bm = writer.encode(message, BarcodeFormat.QR_CODE, 170, 170);
-                    // Crear un buffer para escribir la imagen
-             BufferedImage imagex = new BufferedImage(170, 170, BufferedImage.TYPE_INT_RGB);
-                     for (int i = 0; i < 170; i++) {
-                         for (int j = 0; j < 170; j++) {
-                                int grayValue = (bm.get(j, i) ? 1 : 0) & 0xff;
-                                imagex.setRGB(j, i, (grayValue == 0 ? 0 : 0xFFFFFF));
-                            }
-                         }
-                        imagex = invertirColores(imagex);
-                        FileOutputStream qrCode = new FileOutputStream(dir+"/fiber.jpg");                        
-                        ImageIO.write(imagex, "jpg", qrCode);
-                        qrCode.close();  
-                        ImageIO.read(new File(dir+"/fiber.jpg"));
-             if(!dir.exists())
-                    {
-                        dir.mkdirs();
-                    }    
-             
-               return "todo bien"; 
+           return "Failed to Zip";
+    	}      
            
-        }
-      
-
-  
-
-  
-  
-private BufferedImage invertirColores(BufferedImage imagen) {
-        for (int i = 0; i < 170; i++) {
-            for (int j = 0; j < 170; j++) {
-                int rgb = imagen.getRGB(i, j);
-                if (rgb == -16777216) {
-                    imagen.setRGB(i, j, -1);
-                } else {
-                    imagen.setRGB(i, j, -16777216);
-                }
-            }
-        }
-        return imagen;       
-}
-
-
+   }
+   
+ 
     
 }//fin de la calse

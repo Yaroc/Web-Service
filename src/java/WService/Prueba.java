@@ -30,52 +30,31 @@ public class Prueba {
     
     String FileName;
     public String Firma(String bse64, String NameFile, String message) throws IOException, WriterException {
-       
-        
-//        
-//        System.err.println("la base 64:"+bse64);
-//        System.err.println("el nombre de archivo:"+NameFile);
-//        System.err.println("el mensaje:"+message);
-//        
-        
-        
+
         String Password="123";
-       FileAux fa=new FileAux();
-       String zipfile=fa.CreateFile(NameFile,bse64,"zip");
-       
-      String imagen=fa.unzipfile(zipfile,fa.getpath()+"/Images/");
-        System.err.println( getExt(imagen));
-      
+        FileAux fa=new FileAux();
+        String zipfile=fa.CreateFile(NameFile,bse64,"zip");
+        String imagen=fa.unzipfile(zipfile,fa.getpath()+"/Images/");
+        //System.err.println( getExt(imagen));
         String extension=getExt(imagen);
         
-      switch(extension){
-          
-          case "jpg":
+              switch(extension){
+              case "jpg":
               System.err.println("archivo es jpg");
-              imagen=fa.jpgToPng(imagen);
-             
+              imagen=fa.jpgToPng(imagen);  
               break;
-      
-      
       }
       
-      
-      this.FileName=fa.ImageName;
-       
-       
-       
+       this.FileName=fa.ImageName;
        String rutafirmada=firmar(message,Password,imagen,"AES");
-       
        String zipFirmado=fa.zipFile(rutafirmada, NameFile);
-       
-     String resultado=fa.getb64(zipFirmado);
-       
-     
-       
-       
-       
-       
-       return resultado;
+//       fa.DeleteFile(zipFirmado);
+//       fa.DeleteFile(rutafirmada);
+//       fa.DeleteFile(imagen);
+//       fa.DeleteFile(zipfile);
+       String resultado=fa.getb64(zipFirmado);
+
+       return imagen;
        //return imagen;
     }
     
@@ -170,24 +149,19 @@ public class Prueba {
         else{System.out.println("Failed to delete "+pathImage);}
          return  resultado; 
     }
-
-    /**
-     * Web service operation
-     * @param Message
-     * @return 
-     */
-    public String CreateQR(String Message) {
+        
+        
+     public String CreateQR(String Message) {
         String result = "";
+        Other o=new Other();
         try {
             FileAux fa=new FileAux();
             
-                result =fa.CreateQR(Message);
-                
-            
+                result =o.CreateQR(Message);
         } catch (WriterException ex) {
-            Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
+           System.err.println(ex.getMessage());
         }
         return result;
     }
