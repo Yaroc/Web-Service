@@ -25,16 +25,10 @@ import javax.imageio.ImageIO;
 public class FileAux {
     
     
-    String path=System.getProperty("user.home") + "/Documents/PruebaWebService/Imagenes";//Dejen esta ruta...
+    String path=System.getProperty("user.home") + "/Documents/NetBeansProjects/Web-Service/web/Imagenes";//Dejen esta ruta...
     
     public FileAux(){
-    File f=new File(path);
-    File f2=new File(path+"/ZipFiles");
-    File f3=new File(path+"/Images");
-    if (!f.exists()){f.mkdirs();}
-    if (!f2.exists()){f.mkdirs();}
-    if (!f3.exists()){f.mkdirs();}
-    System.out.println("Dir Created");
+   
     }
     
     String ImageName=null;
@@ -156,32 +150,48 @@ public class FileAux {
    
    public String zipFile(String pathToCompress,String NameFile){
    
-       byte[] buffer = new byte[4096];
-       String zipath=this.path+"\\ZipFiles\\"+NameFile+"zipFirmado.zip";
+       System.out.println("path to compress:"+pathToCompress);
+       String []path=pathToCompress.split("/");
+       
+       String compress=path[path.length-1];
+       System.out.println("path last:"+compress);
+       
+     
+       
+       byte[] buffer = new byte[100000];
+       String zipath=System.getProperty("user.home")+"/Documents/NetBeansProjects/Web-Service/web/Imagenes/ZipFiles/"+NameFile+"Firmado.zip";
  
     	try{
+ 
     		FileOutputStream fos = new FileOutputStream(zipath);
     		ZipOutputStream zos = new ZipOutputStream(fos);
-    		ZipEntry ze= new ZipEntry(pathToCompress);
+    		ZipEntry ze= new ZipEntry(compress);
     		zos.putNextEntry(ze);
+                
+                
     		FileInputStream in = new FileInputStream(pathToCompress);
+ 
     		int len;
     		while ((len = in.read(buffer)) > 0) {
     			zos.write(buffer, 0, len);
     		}
+ 
     		in.close();
     		zos.closeEntry();
+ 
+    		//remember close it
     		zos.close();
+ 
     		System.out.println("Done");
                 return zipath;
     	}catch(IOException ex){
     	   ex.printStackTrace();
-           
-           return "Failed to Zip"+zipath;
-    	}      
-           
+           return null;
+    	}
+         
+  
    }
-   
+    
  
     
 }//fin de la calse

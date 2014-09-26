@@ -31,7 +31,7 @@ public class Prueba {
         FileAux fa=new FileAux();
         String zipfile=fa.CreateFile(NameFile,bse64,"zip");
         String imagen=fa.unzipfile(zipfile,fa.getpath()+"/Images/");
-        //System.err.println( getExt(imagen));
+        System.err.println("path imagen:"+imagen);
         String extension=getExt(imagen);
         
               switch(extension){
@@ -39,12 +39,17 @@ public class Prueba {
               System.err.println("archivo es jpg");
               imagen=fa.jpgToPng(imagen);  
               break;
+              case "JPG":
+                  System.err.println("archivo es jpg");
+              imagen=fa.jpgToPng(imagen);  break;
+                  
       }
       
        this.FileName=fa.ImageName;
        String rutafirmada=firmar(message,Password,imagen,"AES");
-       String zipFirmado=fa.zipFile(rutafirmada, NameFile);
+        System.err.println("ruta firmada:"+rutafirmada);
        
+       String zipFirmado=fa.zipFile(rutafirmada, NameFile);            
        String resultado=fa.getb64(zipFirmado);
        fa.DeleteFile(zipFirmado);
        fa.DeleteFile(rutafirmada);
@@ -55,6 +60,7 @@ public class Prueba {
     }
     
     private String firmar(String info, String pass, String nomArch, String cifradoM){
+        String ruta="";
         try {
             File archivoBMP = new File(nomArch);
             PNG img = new PNG(archivoBMP);
@@ -74,11 +80,11 @@ public class Prueba {
             if (getExt(archivoBMP.getName()).equalsIgnoreCase("png")) {
                 StegaWithPNG stega = new StegaWithPNG(img);
                 System.out.println("Is valid: "+img.isValid());
-                String ruta=System.getProperty("user.home") + "/Documents/PruebaWebService/Imagenes/Images/"+FileName+"Firmada.png";
+                 ruta=System.getProperty("user.home") + "/Documents/NetbeansProjects/Web-Service/web/Imagenes/Images/"+FileName+"Firmada.png";
                 boolean execStega = stega.execStega(ruta, mensajeCifrado, "LSBs");
                 System.out.println("execStega: "+execStega);
                 if (execStega) {//img.savePNG(nFile, stega.getPNG().getChunks())
-                    return ruta;
+                   return ruta; 
                 } else {
                     return "No se pudo salvar la imagen";
                 }
@@ -87,7 +93,7 @@ public class Prueba {
             ex.printStackTrace();
             return "Error: al abrir "+nomArch;
         }
-        return "Todo bien";
+        return ruta;
     }
     
     
