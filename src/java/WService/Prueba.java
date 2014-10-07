@@ -11,7 +11,6 @@ import FADD.Ciphering;
 import FADD.PNG;
 import FADD.StegaWithPNG;
 import FADD.Text_XML;
-import FADD.XOR;
 import com.google.zxing.WriterException;
 import java.io.File;
 import java.io.IOException;
@@ -31,56 +30,43 @@ public class Prueba {
         FileAux fa=new FileAux();
         String zipfile=fa.CreateFile(NameFile,bse64,"zip");
         String imagen=fa.unzipfile(zipfile,fa.getpath()+"/Images/");
-        System.err.println("path imagen:"+imagen);
+       // System.err.println("path imagen:"+imagen);
         String extension=getExt(imagen);
-        
               switch(extension){
               case "jpg":
-              System.err.println("archivo es jpg");
+             // System.err.println("archivo es jpg");
               imagen=fa.jpgToPng(imagen);  
               break;
               case "JPG":
-                  System.err.println("archivo es jpg");
-              imagen=fa.jpgToPng(imagen);  break;
-                  
+               //   System.err.println("archivo es jpg");
+              imagen=fa.jpgToPng(imagen);  break;          
       }
       
        this.FileName=fa.ImageName;
-       String rutafirmada=firmar(message,Password,imagen,"AES");
-        System.err.println("ruta firmada:"+rutafirmada);
-       
-       String zipFirmado=fa.zipFile(rutafirmada, NameFile);            
-       String resultado=fa.getb64(zipFirmado);
-       fa.DeleteFile(zipFirmado);
-       fa.DeleteFile(rutafirmada);
-       fa.DeleteFile(imagen);
-       fa.DeleteFile(zipfile);
-       return resultado;
+        String rutafirmada=firmar(message,Password,imagen);
+        //String zip=fa.zipFile(rutafirmada, NameFile);
+        //String b64=fa.getb64(zip);
+        fa.DeleteFile(imagen);
+        fa.DeleteFile(zipfile);
+       // fa.DeleteFile(zip);
+        return rutafirmada;
        //return imagen;
     }
     
-    private String firmar(String info, String pass, String nomArch, String cifradoM){
+    private String firmar(String info, String pass, String nomArch){
         String ruta="";
         try {
             File archivoBMP = new File(nomArch);
             PNG img = new PNG(archivoBMP);
- 
             Ciphering cifrador = null;
-            int metCifrado = 0;
-            if (cifradoM.equalsIgnoreCase("XOR")) {
-                metCifrado = 1;
-                cifrador = new XOR();
-            } else if (cifradoM.equalsIgnoreCase("AES")) {
-                metCifrado = 2;
-                cifrador = new AES();
-            } 
-            byte[] mensajeCifrado = cifrador.encripta(info, pass, "XOR");
+            cifrador = new AES(); 
+            byte[] mensajeCifrado = cifrador.encripta(info, pass, "AES");
             
             //Proceso de BMP
             if (getExt(archivoBMP.getName()).equalsIgnoreCase("png")) {
                 StegaWithPNG stega = new StegaWithPNG(img);
                 System.out.println("Is valid: "+img.isValid());
-                 ruta=System.getProperty("user.home") + "/Documents/NetbeansProjects/Web-Service/web/Imagenes/Images/"+FileName+"Firmada.png";
+                ruta=System.getProperty("user.home") + "/Documents/NetbeansProjects/Web-Service/web/Imagenes/Images/"+FileName+"Firmada.png";
                 boolean execStega = stega.execStega(ruta, mensajeCifrado, "LSBs");
                 System.out.println("execStega: "+execStega);
                 if (execStega) {//img.savePNG(nFile, stega.getPNG().getChunks())
@@ -97,20 +83,14 @@ public class Prueba {
     }
     
     
-     private String consultar(String pass, String nomArch, String cifradoM){
+     private String consultar(String pass, String nomArch){
         try {
             File archivoBMP = new File(nomArch);
             PNG img = new PNG(archivoBMP);
-            byte[] cifrado=new StegaWithPNG(img).getInfo(img, "XOR");
+            byte[] cifrado=new StegaWithPNG(img).getInfo(img, "AES");
             Ciphering cifrador=null;
-            int metCifrado=0;
-            if(cifradoM.equalsIgnoreCase("XOR")){
-                metCifrado=1; cifrador=new XOR();
-            }else if(cifradoM.equalsIgnoreCase("AES")){
-                metCifrado=2; cifrador=new AES();
-            }else{
-                //error
-            }
+            cifrador=new AES();
+           
             String mensaje_txt=" -Error- ";
             String mensaje_xml=" -Error- ";
             mensaje_xml=cifrador.decripta(cifrado, pass,"LSBs");
@@ -141,14 +121,15 @@ public class Prueba {
         return new String(nChar, 0, 3);
     }
 
-        public String ConsultaFirma(String Password, String base64,String nameFile,String typeAlgo) {
+        public String ConsultaFirma( String base64,String nameFile) throws IOException {
         FileAux fa=new FileAux();
-        byte []nte= fa.decodeBase64(base64);
-        String pathImage=fa.CreateFile(nameFile,base64,"png");
-        String resultado=consultar(Password,pathImage,"XOR");
-        File fichero = new File(pathImage);
-        if(fichero.delete()){System.out.println(pathImage+" Deleted");}
-        else{System.out.println("Failed to delete "+pathImage);}
+      //  byte []nte= fa.decodeBase64(base64);
+        String pathfile=fa.CreateFile(nameFile,base64,"zip");
+        String pathImage=fa.unzipfile(pathfile, fa.getpath()+"/Images/");
+        System.out.println("Created file"+pathImage);
+        String resultado=consultar("123",pathImage);
+        fa.DeleteFile(pathImage);
+        fa.DeleteFile(pathfile);
          return  resultado; 
     }
         
@@ -160,10 +141,8 @@ public class Prueba {
             FileAux fa=new FileAux();
             
                 result =o.CreateQR(Message);
-        } catch (WriterException ex) {
+        } catch (WriterException | IOException ex) {
             System.err.println(ex.getMessage());
-        } catch (IOException ex) {
-           System.err.println(ex.getMessage());
         }
         return result;
     }
