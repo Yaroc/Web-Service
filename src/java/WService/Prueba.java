@@ -44,12 +44,17 @@ public class Prueba {
       
        this.FileName=fa.ImageName;
         String rutafirmada=firmar(message,Password,imagen);
+        
+        String rutaAbsoluta=fa.getPath(rutafirmada);
+        HiloSession session=new HiloSession(rutafirmada);
+        session.start();
+        
         //String zip=fa.zipFile(rutafirmada, NameFile);
         //String b64=fa.getb64(zip);
-        fa.DeleteFile(imagen);
-        fa.DeleteFile(zipfile);
+        //7fa.DeleteFile(imagen);
+        //fa.DeleteFile(zipfile);
        // fa.DeleteFile(zip);
-        return rutafirmada;
+        return rutaAbsoluta;
        //return imagen;
     }
     

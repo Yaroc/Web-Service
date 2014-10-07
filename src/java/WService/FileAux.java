@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -191,6 +193,28 @@ public class FileAux {
          
   
    }
+   
+   
+   public String getPath(String path) throws UnknownHostException{
+    String ip=Inet4Address.getLocalHost().getHostAddress();
+String Ruta=ip+":8080/";
+    String array[]=path.split("/");
+     for(int i=3;i<array.length;i++){
+        if(!array[i].equals("web")){
+            if(i==array.length-1){
+            Ruta=Ruta+array[i];
+            }
+            else{
+             Ruta=Ruta+array[i]+"/";
+            }
+           }
+         }
+    return Ruta;
+}
+   
+   
+   
+   
     
  
     
