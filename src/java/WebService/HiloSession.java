@@ -6,9 +6,6 @@
 
 package WebService;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author hilsierivan
@@ -30,7 +27,7 @@ public class HiloSession extends Thread {
             System.out.println("termino sesion");
             aux.DeleteFile(rutaimagen);
         } catch (InterruptedException ex) {
-            Logger.getLogger(HiloSession.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         }
     
     }

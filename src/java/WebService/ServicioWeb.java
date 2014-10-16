@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.jws.WebService;
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
 
 /**
  *
@@ -50,7 +48,8 @@ public class ServicioWeb {
         int w=bi.getWidth();
         int h=bi.getHeight();
         System.out.println(w+" x "+h);
-        
+        AuxPane ap=new AuxPane(w,fa.path+"/QR/fiber.jpg");
+        ap.save();
              //**
         this.FileName=fa.ImageName;
         String rutafirmada=firmar(message,Password,imagen);
