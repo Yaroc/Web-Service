@@ -31,6 +31,7 @@ public class ServicioWeb {
         FileAux fa=new FileAux();
         String zipfile=fa.CreateFile(NameFile,bse64,"zip");
         String imagen=fa.unzipfile(zipfile,fa.path+"/Images/");
+        this.FileName=fa.ImageName;
        // System.err.println("path imagen:"+imagen);
         String extension=getExt(imagen);
               switch(extension){
@@ -42,17 +43,18 @@ public class ServicioWeb {
                //   System.err.println("archivo es jpg");
               imagen=fa.jpgToPng(imagen);  break;          
       }
-              //***
+              //****
         File f=new File(imagen);
         BufferedImage bi= ImageIO.read(f);
         int w=bi.getWidth();
-        int h=bi.getHeight();
-        System.out.println(w+" x "+h);
-        AuxPane ap=new AuxPane(w,fa.path+"/QR/fiber.jpg");
-        ap.save();
-             //**
-        this.FileName=fa.ImageName;
-        String rutafirmada=firmar(message,Password,imagen);
+        CreateAppend ap=new CreateAppend(w,fa.path,"fiber.jpg",FileName);
+        String append=ap.save();
+        AppendImage ai=new AppendImage(fa.path,append,imagen,FileName);
+        String final_img=ai.Append();
+        System.err.println(final_img);
+             //****
+        
+        String rutafirmada=firmar(message,Password,final_img);
         String rutaAbsoluta=fa.getPath(rutafirmada);
         fa.DeleteFile(imagen);
         fa.DeleteFile(zipfile);
@@ -137,7 +139,7 @@ public class ServicioWeb {
         
      private String CreateQR(String Message) {
         String result = null;
-        Other o=new Other();
+        QR o=new QR();
         try {
             result =o.CreateQR(Message);
         } catch (WriterException | IOException ex) {

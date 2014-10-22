@@ -22,13 +22,16 @@ import javax.swing.JPanel;
  *
  * @author Yarib
  */
-public class AuxPane extends JPanel {
+public class CreateAppend extends JPanel {
       ImageIcon qr_icon,info_icon;
       Image qr_image,info_image;
       BufferedImage  bi;
-      public AuxPane(int s,String qr){
-        qr_icon=new ImageIcon(qr);
-        info_icon=new ImageIcon("barra.png");
+      String filename,path;
+      public CreateAppend(int s,String path,String qr,String filename){
+        this.filename=filename;
+        this.path=path;
+        qr_icon=new ImageIcon(path+"/QR/"+qr);
+        info_icon=new ImageIcon(path+"/barra.png");
         info_image=info_icon.getImage();
         qr_image=qr_icon.getImage();
         this.setBackground(Color.WHITE);
@@ -48,10 +51,15 @@ public class AuxPane extends JPanel {
         g2.drawImage(info_image,300,20,400,100,null); 
     }
 
-    public void save() throws IOException {
+    public String save() throws IOException {
+        
         Graphics g=bi.getGraphics();
         paint(g);
-        ImageIO.write(bi, "png", new File("prueba.png"));
-        System.out.println("Saving");
+        
+        String name="/Images/"+filename+"append.png";
+        ImageIO.write(bi, "png", new File(path+name));
+        System.out.println("Saving" +path+name);
+        File f=new File(path+name);
+        return f.getAbsolutePath();
     }
 }
